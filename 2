@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mundo Mamitas - DIT</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --burbuja-rosa: #FF85A2;
+            --burbuja-azul: #70D6FF;
+            --burbuja-amarillo: #FFD166;
+            --burbuja-verde: #06D6A0;
+            --burbuja-morado: #B5179E;
+            --texto: #2B2D42;
+            --blanco: #FFFFFF;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg, #FFE5EC 0%, #E8F0FE 100%);
+            color: var(--texto);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: bounce 2s infinite alternate;
+        }
+
+        h1 {
+            font-family: 'Fredoka One', cursive;
+            color: var(--burbuja-morado);
+            font-size: 2.8rem;
+            text-shadow: 3px 3px 0px var(--burbuja-amarillo);
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #555;
+            background: var(--blanco);
+            padding: 8px 20px;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: inline-block;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                grid-template-columns: 1fr 1fr;
+            }
+            .full-width {
+                grid-column: span 2;
+            }
+        }
+
+        .card {
+            background: var(--blanco);
+            border-radius: 30px;
+            padding: 25px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            border: 4px solid transparent;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px) scale(1.01);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+        }
+
+        /* Colores de bordes personalizados para estilo infantil */
+        .card-cred { border-color: var(--burbuja-rosa); }
+        .card-campana { border-color: var(--burbuja-azul); }
+        .card-familia { border-color: var(--burbuja-amarillo); }
+        .card-whatsapp { border-color: var(--burbuja-verde); }
+        .card-video { border-color: var(--burbuja-morado); }
+        .card-juego { border-color: #FF7096; }
+
+        .card-title {
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Avatar Sección */
+        .avatar-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: linear-gradient(45deg, #FFF0F5, #E6F8FF);
+            padding: 15px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+
+        .avatar {
+            font-size: 3.5rem;
+            animation: pulse 1.5s infinite alternate;
+            background: white;
+            padding: 10px;
+            border-radius: 50%;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .avatar-text {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #4A4E69;
+        }
+
+        /* Botones de Enlace */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 15px;
+            border-radius: 20px;
+            text-decoration: none;
+            color: var(--blanco);
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            transition: background 0.2s;
+        }
+
+        .btn-cred { background-color: var(--burbuja-rosa); }
+        .btn-cred:hover { background-color: #FF5C8A; }
+        .btn-campana { background-color: var(--burbuja-azul); }
+        .btn-campana:hover { background-color: #40C4FF; }
+        .btn-familia { background-color: #FFB703; }
+        .btn-familia:hover { background-color: #FB8500; }
+        .btn-whatsapp { background-color: var(--burbuja-verde); }
+        .btn-whatsapp:hover { background-color: #02C39A; }
+
+        /* Contenedor de Video Responsivo */
+        .video-responsive {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .video-responsive iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Estilos del Juego */
+        .game-box {
+            background: #F8F9FA;
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .score-board {
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.3rem;
+            color: var(--burbuja-morado);
+            margin-bottom: 15px;
+            background: #FFF;
+            padding: 5px 15px;
+            border-radius: 50px;
+            display: inline-block;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .question {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        @media(min-width: 500px) {
+            .options-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        .option-btn {
+            background: var(--blanco);
+            border: 3px solid #E0E0E0;
+            padding: 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            transition: all 0.2s;
+        }
+
+        .option-btn:hover {
+            border-color: var(--burbuja-azul);
+            background: #EBF8FF;
+        }
+
+        .feedback {
+            margin-top: 15px;
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.2rem;
+            height: 25px;
+        }
+
+        /* Animaciones */
+        @keyframes bounce {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-8px); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.08); }
+        }
+
+        footer {
+            margin-top: 40px;
+            padding: 20px;
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Mundo Mamitas - DIT 🌟</h1>
+        <div class="subtitle">¡Aprende, cuida y diviértete junto a tu bebé! 👶❤️</div>
+    </header>
+
+    <div class="container">
+
+        <div style="display: flex; flex-direction: column; gap: 25px;">
+            
+            <div class="card card-cred">
+                <h2 class="card-title" style="color: var(--burbuja-rosa);">📊 Tarjeta CRED</h2>
+                <p style="margin-bottom: 15px; font-weight: 500;">Revisa el crecimiento, vacunas y el desarrollo de tu pequeño campeón de forma fácil.</p>
+                <a href="https://desarrolloinfantiltemprano-dit.github.io/LibretaBoys/" target="_blank" class="btn btn-cred">🎒 Ver Mi Tarjeta CRED</a>
+            </div>
+
+            <div class="card card-campana">
+                <h2 class="card-title" style="color: var(--burbuja-azul);">📢 Campañas de Salud</h2>
+                <p style="margin-bottom: 15px; font-weight: 500;">¡No te pierdas ninguna! Entérate aquí de las próximas campañas médicas infantiles.</p>
+                <a href="https://desarrolloinfantiltemprano-dit.github.io/CampanaInfantil/" target="_blank" class="btn btn-campana">🏥 Ver Campañas</a>
+            </div>
+
+            <div class="card card-familia">
+                <h2 class="card-title" style="color: #FFB703;">🏡 Mi Familia</h2>
+                <p style="margin-bottom: 15px; font-weight: 500;">Mantén al día los datos familiares para una mejor atención personalizada.</p>
+                <a href="https://desarrolloinfantiltemprano-dit.github.io/casita/" target="_blank" class="btn btn-familia">📝 Registrar Mi Familia</a>
+            </div>
+
+            <div class="card card-whatsapp">
+                <h2 class="card-title" style="color: var(--burbuja-verde);">💬 Grupo de Mamitas</h2>
+                <p style="margin-bottom: 15px; font-weight: 500;">Únete a nuestra comunidad de WhatsApp, comparte experiencias y recibe consejos del equipo CRED.</p>
+                <a href="https://chat.whatsapp.com/FELCvT889zo265G8LkVkPY" target="_blank" class="btn btn-whatsapp">📱 Unirse al Grupo</a>
+            </div>
+
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 25px;">
+            
+            <div class="card card-video">
+                <div class="avatar-container">
+                    <div class="avatar">👩‍🍼</div>
+                    <div class="avatar-text">
+                        <strong>¡Hola Mamita!</strong><br>
+                        Soy tu consejera virtual. ¡Mira este video importante sobre lactancia!
+                    </div>
+                </div>
+
+                <h2 class="card-title" style="color: var(--burbuja-morado); font-size: 1.3rem;">🎥 Video: Lactancia Materna</h2>
+                
+                <div class="video-responsive">
+                    <iframe src="https://www.youtube.com/embed/jYqE-n9wsa0" title="Video Lactancia Materna" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card card-juego">
+                <h2 class="card-title" style="color: #FF7096;">🎮 ¡Juega y Aprende!</h2>
+                
+                <div class="game-box">
+                    <div class="score-board">🏆 Puntaje: <span id="score">0</span> pts</div>
+                    <div class="question" id="question-text">Cargando pregunta...</div>
+                    <div class="options-grid" id="options-container">
+                        </div>
+                    <div class="feedback" id="feedback-text"></div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <footer>
+        Mundo Mamitas - Desarrollo Infantil Temprano (DIT) © 2026 🌈
+    </footer>
+
+    <script>
+        const questions = [
+            {
+                q: "¿Hasta qué edad se recomienda la lactancia materna exclusiva? 🍼",
+                options: ["Hasta los 4 meses", "Hasta los 6 meses", "Hasta el año", "Solo 2 semanas"],
+                correct: 1,
+                tip: "¡Excelente! Hasta los 6 meses el bebé no necesita ni agua, la leche tiene todo. 🌟"
+            },
+            {
+                q: "¿Qué es el calostro? 💛",
+                options: ["Leche madura", "Una vitamina artificial", "La primera leche de los primeros días", "Agua con azúcar"],
+                correct: 2,
+                tip: "¡Muy bien! El calostro es la primera vacuna natural para tu bebé. 🥇"
+            },
+            {
+                q: "¿Cómo se debe ofrecer la leche materna al bebé? ⏰",
+                options: ["Cada 4 horas fijas", "A libre demanda (cada vez que pida)", "Solo de día", "Dos veces al día"],
+                correct: 1,
+                tip: "¡Perfecto! A libre demanda ayuda a producir más leche y mantiene feliz al bebé. 🥰"
+            },
+            {
+                q: "¿Qué beneficio tiene la lactancia para la mamá? 👩‍🍼",
+                options: ["Ninguno", "Ayuda a recuperar el tamaño del útero", "Da dolor de cabeza", "Solo da sueño"],
+                correct: 1,
+                tip: "¡Así es! Protege a la mamá contra anemias y ayuda a recuperar la silueta. 💪"
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        const questionTextElement = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const scoreElement = document.getElementById('score');
+        const feedbackElement = document.getElementById('feedback-text');
+
+        function loadQuestion() {
+            feedbackElement.innerText = "";
+            let currentQuestion = questions[currentQuestionIndex];
+            questionTextElement.innerText = currentQuestion.q;
+            optionsContainer.innerHTML = "";
+
+            currentQuestion.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.innerText = option;
+                button.classList.add('option-btn');
+                button.onclick = () => checkAnswer(index);
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        function checkAnswer(selectedIndex) {
+            let currentQuestion = questions[currentQuestionIndex];
+            const buttons = optionsContainer.getElementsByClassName('option-btn');
+
+            // Deshabilitar botones para que no marquen doble
+            for(let btn of buttons) { btn.disabled = true; }
+
+            if (selectedIndex === currentQuestion.correct) {
+                score += 10;
+                scoreElement.innerText = score;
+                feedbackElement.style.color = "#06D6A0";
+                feedbackElement.innerText = currentQuestion.tip;
+            } else {
+                feedbackElement.style.color = "#FF85A2";
+                feedbackElement.innerText = "¡Oh, casi! Inténtalo en la siguiente. 🌸";
+                buttons[selectedIndex].style.background = "#FFE5EC";
+                buttons[selectedIndex].style.borderColor = "#FF85A2";
+            }
+
+            // Cambiar de pregunta después de 3.5 segundos
+            setTimeout(() => {
+                currentQuestionIndex++;
+                if (currentQuestionIndex < questions.length) {
+                    loadQuestion();
+                } else {
+                    // Fin del juego, reinicia
+                    questionTextElement.innerText = "🎉 ¡Felicidades Mamita! Completaste el juego con éxito. 🏆";
+                    optionsContainer.innerHTML = `<button class="btn btn-campana" onclick="resetGame()">Volver a Jugar 🔄</button>`;
+                    feedbackElement.innerText = "";
+                }
+            }, 3500);
+        }
+
+        function resetGame() {
+            currentQuestionIndex = 0;
+            score = 0;
+            scoreElement.innerText = score;
+            loadQuestion();
+        }
+
+        // Iniciar el juego automáticamente al cargar la página
+        loadQuestion();
+    </script>
+</body>
+</html>
