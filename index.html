@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Citas CRED | Castillo Grande</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1; --primary-dark: #4f46e5;
+            --secondary: #10b981; --warning: #f59e0b;
+            --danger: #ef4444; --bg: #0f172a;
+            --card: rgba(255, 255, 255, 0.98);
+            --anemia-bg: #fff1f2; --anemia-border: #fda4af;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            margin: 0; padding: 20px; color: #1e293b;
+            min-height: 100vh; display: flex; justify-content: center;
+        }
+        .container {
+            width: 100%; max-width: 550px;
+            background: var(--card); border-radius: 24px; padding: 32px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2);
+        }
+        .modal-overlay {
+            display: none; position: fixed; top:0; left:0; width:100%; height:100%;
+            background: rgba(15, 23, 42, 0.8); z-index: 9999; align-items: center; justify-content: center;
+        }
+        .modal-box {
+            background: white; padding: 25px; border-radius: 20px; max-width: 320px; 
+            width: 85%; text-align: center; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2);
+        }
+        .header { text-align: center; margin-bottom: 25px; }
+        .header h2 { margin: 0; color: var(--primary-dark); font-weight: 800; }
+        .alert-box {
+            padding: 15px; border-radius: 16px; font-size: 13px; font-weight: 600;
+            margin-bottom: 20px; display: none; flex-direction: column; gap: 8px;
+            animation: slideIn 0.3s ease;
+        }
+        .alert-danger { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+        .anemia-info-card {
+            background: var(--anemia-bg); border: 1px solid var(--anemia-border);
+            padding: 10px; border-radius: 12px; margin-top: 8px; font-size: 11px;
+        }
+        .form-section { background: white; padding: 20px; border-radius: 20px; margin-bottom: 15px; border: 1px solid #f1f5f9; }
+        .section-title { font-size: 11px; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 15px; display: block; }
+        .input-group { margin-bottom: 12px; }
+        label { display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 5px; }
+        input, select {
+            width: 100%; padding: 12px; border-radius: 12px;
+            border: 2px solid #f1f5f9; font-size: 14px; font-weight: 600;
+            transition: 0.2s; box-sizing: border-box;
+        }
+        input:focus { border-color: var(--primary); outline: none; }
+        input:required { border-left: 4px solid var(--danger); }
+        .historial-box {
+            background: #f8fafc; border-radius: 16px; padding: 15px;
+            margin-bottom: 20px; display: none; border: 1px solid #e2e8f0;
+        }
+        .historial-item { font-size: 12px; display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #f1f5f9; }
+        .historial-item b { color: var(--primary); background: #eef2ff; padding: 2px 8px; border-radius: 6px; font-size: 10px; }
+        .btn-submit {
+            width: 100%; padding: 18px; background: var(--primary); color: white;
+            border: none; border-radius: 16px; font-weight: 800; font-size: 15px;
+            cursor: pointer; transition: 0.3s;
+        }
+        .btn-submit:hover { background: var(--primary-dark); transform: translateY(-1px); }
+        .btn-submit:disabled { background: #cbd5e1; cursor: not-allowed; }
+        .badge-adicional {
+            display: none; background: #fff7ed; border: 1px solid #ffedd5;
+            padding: 12px; border-radius: 12px; margin-top: 10px;
+        }
+        .contador-vivos {
+            background: #e0f2fe; color: #0369a1; padding: 12px; border-radius: 12px;
+            font-size: 12px; font-weight: 800; margin-bottom: 15px; display: none;
+            border: 1px solid #bae6fd; align-items: center; gap: 10px;
+        }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .admin-trigger { text-align: center; margin-top: 20px; font-size: 11px; color: #94a3b8; cursor: pointer; text-decoration: underline; }
+        
+        .btn-lupa {
+            background: var(--primary); color: white; border: none; border-radius: 12px; 
+            padding: 0 15px; cursor: pointer; transition: 0.2s;
+        }
+        .btn-lupa:hover { background: var(--primary-dark); }
+        
+        .report-section { border-top: 4px solid var(--secondary); margin-top: 20px; display: none; }
+        .btn-excel {
+            width: 100%; padding: 12px; background: var(--secondary); color: white; 
+            border: none; border-radius: 12px; font-weight: 800; cursor: pointer;
+            margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .toggle-report {
+            text-align: center; margin-top: 15px; font-size: 12px; font-weight: 800; 
+            color: var(--secondary); cursor: pointer; display: block;
+        }
+    </style>
+</head>
+<body>
+
+<div id="modalCustom" class="modal-overlay">
+    <div class="modal-box">
+        <div id="modalIcon" style="font-size: 40px; margin-bottom: 15px;"></div>
+        <p id="modalText" style="font-weight: 700; color: #1e293b; margin-bottom: 20px;"></p>
+        <button onclick="cerrarModal()" style="background: var(--primary); color: white; border: none; padding: 10px 25px; border-radius: 10px; font-weight: 800; cursor: pointer;">Aceptar</button>
+    </div>
+</div>
+
+<div class="container">
+    <div class="header">
+        <div style="width:50px; height:50px; background:var(--primary); border-radius:15px; margin:0 auto 10px; display:flex; align-items:center; justify-content:center; color:white; font-size:20px;">
+            <i class="fa-solid fa-calendar-check"></i>
+        </div>
+        <h2>Sistema de Citas</h2>
+        <p style="font-size: 12px; color: #64748b; font-weight: 700;">C.S. CASTILLO GRANDE</p>
+    </div>
+
+    <div id="alertInasistencia" class="alert-box alert-danger">
+        <div style="display:flex; align-items:center; gap:10px;">
+            <i class="fa-solid fa-circle-exclamation fa-beat"></i>
+            <div id="inaMsg" style="width: 100%;"></div>
+        </div>
+        <div id="anemiaDetails" style="display:none;" class="anemia-info-card"></div>
+    </div>
+
+    <div id="boxHistorial" class="historial-box">
+        <span class="section-title"><i class="fa-solid fa-clock-rotate-left"></i> Historial del Niño</span>
+        <div id="listaHistorial"></div>
+    </div>
+
+    <form id="citaForm">
+        <div class="form-section">
+            <span class="section-title">Información del Niño</span>
+            <div class="input-group">
+                <label>DNI *</label>
+                <div style="display: flex; gap: 8px;">
+                    <input type="number" name="DNI" id="dniInput" required oninput="if(this.value.length > 8) this.value = this.value.slice(0, 8);">
+                    <button type="button" class="btn-lupa" onclick="buscarDNI()">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="input-group">
+                <label>NOMBRE *</label>
+                <input type="text" name="NOMBRE" id="nombreInput" required readonly style="background:#f1f5f9">
+            </div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                <div class="input-group">
+                    <label>F. NACIMIENTO *</label>
+                    <input type="text" id="nacInput" required readonly style="background:#f1f5f9" maxlength="10" placeholder="DD/MM/YYYY">
+                </div>
+                <div class="input-group">
+                    <label>EDAD A LA CITA</label>
+                    <input type="text" name="EDAD" id="edadInput" readonly style="background:#f1f5f9; color:var(--primary-dark); font-weight:800;">
+                </div>
+            </div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                <div class="input-group">
+                    <label>HISTORIA CLÍNICA *</label>
+                    <input type="text" name="HC" id="hcInput" required readonly style="background:#f1f5f9" placeholder="N° HC">
+                </div>
+                <div class="input-group">
+                    <label>CELULAR *</label>
+                    <input type="text" name="CELULAR" id="telInput" required placeholder="Ingrese celular" style="background:#ffffff">
+                </div>
+            </div>
+            <div class="input-group">
+                <label>SECTOR / DIRECCIÓN *</label>
+                <input type="text" name="SECTOR" id="sectorInput" required readonly style="background:#f1f5f9" placeholder="Sector de vivienda">
+            </div>
+        </div>
+
+        <div class="form-section">
+            <span class="section-title">Detalles de la Atención</span>
+            
+            <div id="infoCitas" class="contador-vivos">
+                <i class="fa-solid fa-users-viewfinder"></i>
+                <span id="textoContador">Seleccione fecha para ver ocupación.</span>
+            </div>
+
+            <div class="input-group">
+                <label>CONSULTORIO *</label>
+                <select name="CONSULTORIO" id="consInput" required>
+                    <option value="CRED">🩺 CRED (Crecimiento y Desarrollo)</option>
+                    <option value="VACUNATORIO">🩺 VACUNATORIO-ESNI</option>
+                </select>
+            </div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                <div class="input-group">
+                    <label>FECHA CITA *</label>
+                    <input type="date" id="citaInput" required>
+                </div>
+                <div class="input-group">
+                    <label>TURNO *</label>
+                    <select name="TURNO" id="turnoInput" required>
+                        <option value="MAÑANA">MAÑANA (18 Cupos)</option>
+                        <option value="TARDE">TARDE (6 Cupos)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="boxAdicional" class="badge-adicional">
+                <label style="display:flex; align-items:center; gap:8px; color:#9a3412; font-size:12px; cursor:pointer;">
+                    <input type="checkbox" name="ES_ADICIONAL" id="checkAdicional" value="true">
+                    <span><b>CUPOS AGOTADOS.</b> Acepto registrar como adicional.</span>
+                </label>
+            </div>
+        </div>
+
+        <input type="hidden" name="FECHA_NACIMIENTO" id="finalNac">
+        <input type="hidden" name="FECHA_CITA" id="finalCita">
+        <input type="hidden" name="AVISO_ACTUALIZACION" id="finalAviso">
+        
+        <button type="submit" id="btnEnviar" class="btn-submit">CONFIRMAR REGISTRO</button>
+    </form>
+
+    <span class="toggle-report" onclick="toggleReporte()">
+        <i class="fa-solid fa-file-export"></i> MOSTRAR OPCIONES DE EXPORTACIÓN
+    </span>
+
+    <div id="seccionReporte" class="form-section report-section">
+        <span class="section-title"><i class="fa-solid fa-file-excel"></i> Descargar Lista de Citados</span>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom: 10px;">
+            <div>
+                <label>Desde:</label>
+                <input type="date" id="repDesde">
+            </div>
+            <div>
+                <label>Hasta:</label>
+                <input type="date" id="repHasta">
+            </div>
+        </div>
+        <div class="input-group">
+            <label>Filtrar Consultorio:</label>
+            <select id="repConsultorio">
+                <option value="TODOS">TODOS LOS CONSULTORIOS</option>
+                <option value="CRED">CRED</option>
+                <option value="NUTRICIÓN">NUTRICIÓN</option>
+                <option value="ODONTOLOGÍA">ODONTOLOGÍA</option>
+                <option value="PSICOLOGÍA">PSICOLOGÍA</option>
+            </select>
+        </div>
+        <button type="button" class="btn-excel" onclick="descargarExcel()">
+            <i class="fa-solid fa-download"></i> DESCARGAR EXCEL
+        </button>
+    </div>
+
+    <div class="admin-trigger" onclick="abrirModuloAdmin()">⚙️ Configuración Especialidades</div>
+</div>
+
+<script>
+    const SCRIPT_CITAS = 'https://script.google.com/macros/s/AKfycbz2cChXSNNuMgDU9crFJ3cCcTT_uB03tFIh121-3Q2eJEbG0ffN3L0f5r06xy_REGdJGA/exec'; 
+    const SCRIPT_MAPA = 'https://script.google.com/macros/s/AKfycbzdHC87qNYw0h0Fa6nIu05T8wjXCv20i-PZ1IKEYjdNMxnX8IOZnTGoCAkh9Pnux4gPxw/exec';
+    const SCRIPT_CENSO = 'https://script.google.com/macros/s/AKfycbwkYPuO13juZBjhs7wrxX0MEYy-hPeg0HyzjDJ9_Oy-Yq3Fih99wFAyI5xlbJ_u4rBX1g/exec';
+
+    let globalAnemia = "NO";
+    let globalInasistencias = "NINGUNA";
+    let ultimoDniBuscado = "";
+
+    function lanzarModal(texto, icono='ℹ️') {
+        document.getElementById('modalText').innerText = texto;
+        document.getElementById('modalIcon').innerText = icono;
+        document.getElementById('modalCustom').style.display = 'flex';
+    }
+    function cerrarModal() { document.getElementById('modalCustom').style.display = 'none'; }
+
+    function toggleReporte() {
+        const r = document.getElementById('seccionReporte');
+        const t = document.querySelector('.toggle-report');
+        if (r.style.display === 'block') {
+            r.style.display = 'none';
+            t.innerHTML = '<i class="fa-solid fa-file-export"></i> MOSTRAR OPCIONES DE EXPORTACIÓN';
+        } else {
+            r.style.display = 'block';
+            t.innerHTML = '<i class="fa-solid fa-eye-slash"></i> OCULTAR OPCIONES DE EXPORTACIÓN';
+        }
+    }
+
+    function bloquearFormulario() {
+        document.querySelectorAll('#nombreInput, #nacInput, #hcInput, #sectorInput').forEach(el => { 
+            el.readOnly = true; el.style.background = "#f1f5f9"; el.value = "";
+        });
+        document.getElementById('telInput').value = ""; 
+        document.getElementById('btnEnviar').disabled = true;
+    }
+
+    const aLatino = (f) => {
+        if(!f) return "";
+        const parts = f.split("-");
+        return parts.length === 3 ? `${parts[2]}/${parts[1]}/${parts[0]}` : f;
+    };
+
+    async function buscarDNI() {
+        const dni = document.getElementById('dniInput').value.trim();
+        if(dni.length !== 8) {
+            lanzarModal("Ingrese un DNI de 8 dígitos", "⚠️");
+            return;
+        }
+
+        ultimoDniBuscado = dni;
+        limpiarAlerta();
+        
+        try {
+            const respCeno = await fetch(`${SCRIPT_CENSO}?action=buscar&dni=${dni}`);
+            const dataCenso = await respCeno.json();
+
+            if (!dataCenso) {
+                lanzarModal("Usuario Nuevo, registre sus datos en Módulo Censo", "🚫");
+                bloquearFormulario();
+                return; 
+            }
+
+            document.getElementById('nombreInput').value = dataCenso.nombreB || "";
+            document.getElementById('nacInput').value    = dataCenso.fn || "";
+            document.getElementById('hcInput').value      = dataCenso.hclinica || "";
+            document.getElementById('telInput').value    = dataCenso.telefono || "";
+            document.getElementById('sectorInput').value = dataCenso.sector || "";
+            document.getElementById('btnEnviar').disabled = false;
+
+            let avisos = [];
+
+            const [respMapa, respAnemicosCitas] = await Promise.all([
+                fetch(SCRIPT_MAPA).then(r => r.json()),
+                fetch(`${SCRIPT_CITAS}?action=buscarAnemico&dni=${dni}`).then(r => r.json())
+            ]);
+
+            if(respAnemicosCitas && respAnemicosCitas.esAnemico) {
+                globalAnemia = "SI";
+                avisos.push("🔴 <b>PACIENTE EN TRATAMIENTO DE ANEMIA</b>");
+                
+                let fechaRef = respAnemicosCitas.fechaInicio;
+                if(fechaRef && fechaRef.includes("/")) {
+                    const partes = fechaRef.split("/");
+                    const fInicio = new Date(partes[2], partes[1]-1, partes[0]);
+                    fInicio.setMonth(fInicio.getMonth() + 7);
+                    const fAlta = `${fInicio.getDate().toString().padStart(2,'0')}/${(fInicio.getMonth()+1).toString().padStart(2,'0')}/${fInicio.getFullYear()}`;
+                    
+                    const divAnemia = document.getElementById('anemiaDetails');
+                    divAnemia.style.display = 'block';
+                    divAnemia.innerHTML = `<i class="fa-solid fa-vial-circle-check"></i> <b>TRATAMIENTO ANEMIA:</b><br>📅 Inicio: ${fechaRef}<br>✅ Alta Probable: ${fAlta}`;
+                }
+            } else {
+                globalAnemia = "NO";
+            }
+
+            const n = respMapa.find(x => String(x.DNI).trim() === dni || String(x.dniHijo).trim() === dni);
+            if(n) {
+                let inas = [];
+                if(n.citaFaltante) inas.push("Faltó al Tratamiento de Anemia del: " + n.citaFaltante);
+                if(n.citaCred) inas.push("CRED desde: " + n.citaCred);
+                if(n.citaVacuna) inas.push("Vacunas Imcompletas: " + n.citaVacuna);
+                
+                if(inas.length > 0) {
+                    globalInasistencias = inas.join(" | ");
+                    avisos.push("⚠️ <b>PENDIENTES:</b> " + globalInasistencias);
+                }
+            }
+
+            const rH = await fetch(`${SCRIPT_CITAS}?dni=${dni}`);
+            const dH = await rH.json();
+
+            if(!n) {
+                const totalAvisos = (dH.vecesAdvertido || 0) + 1;
+                avisos.push(`📍 Falta actualizar georeferencia. (Aviso: ${totalAvisos})`);
+                document.getElementById('finalAviso').value = `ACTUALIZAR DATOS (${totalAvisos}° VEZ)`;
+            }
+
+            if(avisos.length > 0) {
+                document.getElementById('alertInasistencia').style.display = 'flex';
+                document.getElementById('inaMsg').innerHTML = avisos.join("<hr style='border:0; border-top:1px solid #fecaca; margin:5px 0;'>");
+            }
+
+            if(dH.encontrado && dH.historial) {
+                const list = document.getElementById('listaHistorial');
+                list.innerHTML = '';
+                dH.historial.reverse().slice(0,3).forEach(c => {
+                    let fLimpia = c.fecha;
+                    if(fLimpia.includes("-")) {
+                         const partes = fLimpia.split("T")[0].split("-");
+                         fLimpia = `${partes[2]}/${partes[1]}/${partes[0]}`;
+                    }
+                    const colorBadge = c.consultorio === 'CRED' ? 'var(--primary)' : 'var(--warning)';
+                    list.innerHTML += `<div class="historial-item"><span>${fLimpia} - ${c.turno}</span> <b style="background:${colorBadge}20; color:${colorBadge}">${c.consultorio}</b></div>`;
+                });
+                document.getElementById('boxHistorial').style.display = 'block';
+            }
+            calcularEdadCita();
+        } catch(e) { 
+            console.error(e); 
+            lanzarModal("Error al conectar.", "❌");
+        }
+    }
+
+    document.getElementById('dniInput').addEventListener('input', (e) => {
+        if(e.target.value.length === 8) buscarDNI();
+    });
+
+    function calcularEdadCita() {
+        const fechaNacStr = document.getElementById('nacInput').value;
+        const fechaCitaStr = document.getElementById('citaInput').value; 
+
+        if(!fechaNacStr || fechaNacStr.length < 10 || !fechaCitaStr) return;
+
+        const [d, m, y] = fechaNacStr.split("/");
+        const nac = new Date(y, m - 1, d);
+        const cita = new Date(fechaCitaStr + "T00:00:00");
+
+        let anios = cita.getFullYear() - nac.getFullYear();
+        let meses = cita.getMonth() - nac.getMonth();
+        let dias = cita.getDate() - nac.getDate();
+
+        if (dias < 0) {
+            meses--;
+            const ultimoDiaMesAnterior = new Date(cita.getFullYear(), cita.getMonth(), 0).getDate();
+            dias += ultimoDiaMesAnterior;
+        }
+        if (meses < 0) {
+            anios--;
+            meses += 12;
+        }
+
+        let resultado = "";
+        if (anios > 0) resultado += anios + (anios === 1 ? " Año, " : " Años, ");
+        if (meses > 0 || anios > 0) resultado += meses + (meses === 1 ? " Mes, " : " Meses, ");
+        resultado += dias + (dias === 1 ? " Día" : " Días");
+
+        document.getElementById('edadInput').value = resultado;
+    }
+
+    function descargarExcel() {
+        const desde = aLatino(document.getElementById('repDesde').value);
+        const hasta = aLatino(document.getElementById('repHasta').value);
+        const cons = document.getElementById('repConsultorio').value;
+
+        if (!desde || !hasta) {
+            lanzarModal("Seleccione un rango de fechas", "⚠️");
+            return;
+        }
+
+        const url = `${SCRIPT_CITAS}?exportar=true&desde=${desde}&hasta=${hasta}&cons=${cons}`;
+        lanzarModal("Iniciando descarga...", "⏳");
+        window.open(url, '_blank');
+    }
+
+    const validarTodo = async () => {
+        const fecha = document.getElementById('citaInput').value;
+        const turno = document.getElementById('turnoInput').value;
+        const cons = document.getElementById('consInput').value;
+        const btn = document.getElementById('btnEnviar');
+        const checkAdi = document.getElementById('checkAdicional');
+        
+        if(!fecha) return;
+
+        const dia = new Date(fecha + 'T00:00:00').getDay();
+        if(dia === 0) { lanzarModal("Domingos no hay atención", "❌"); document.getElementById('citaInput').value=""; return; }
+        if(dia === 6 && turno === "TARDE") { lanzarModal("Sábados solo turno Mañana", "⚠️"); document.getElementById('turnoInput').value="MAÑANA"; return; }
+
+        const fLatino = aLatino(fecha);
+        const r = await fetch(`${SCRIPT_CITAS}?validarCupo=true&fecha=${fLatino}&turno=${turno}&consultorio=${cons}`);
+        const d = await r.json();
+        
+        const limite = (turno === "MAÑANA") ? 18 : 6;
+        const infoDiv = document.getElementById('infoCitas');
+        const textoContador = document.getElementById('textoContador');
+        infoDiv.style.display = 'flex';
+        textoContador.innerText = `Hay ${d.ocupados} citas reservadas para esta fecha en el turno ${turno}.`;
+
+        if (d.ocupados >= limite) {
+            document.getElementById('boxAdicional').style.display = 'block';
+            if (!checkAdi.checked) {
+                btn.disabled = true; btn.innerText = "MARQUE EL CHECK DE ADICIONAL";
+                btn.style.background = "#94a3b8";
+            } else {
+                btn.disabled = false; btn.innerText = "REGISTRAR COMO ADICIONAL";
+                btn.style.background = "var(--warning)";
+            }
+        } else {
+            document.getElementById('boxAdicional').style.display = 'none';
+            checkAdi.checked = false; btn.disabled = false;
+            btn.innerText = "CONFIRMAR REGISTRO"; btn.style.background = "var(--primary)";
+        }
+        calcularEdadCita();
+    };
+
+    document.getElementById('checkAdicional').addEventListener('change', validarTodo);
+    document.getElementById('citaInput').addEventListener('change', validarTodo);
+    document.getElementById('turnoInput').addEventListener('change', validarTodo);
+    document.getElementById('consInput').addEventListener('change', validarTodo);
+
+    document.getElementById('citaForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        if(document.getElementById('edadInput').value === "") {
+            lanzarModal("Verifique las fechas.", "⚠️");
+            return;
+        }
+
+        const btn = document.getElementById('btnEnviar');
+        const dni = document.getElementById('dniInput').value;
+        const tel = document.getElementById('telInput').value;
+
+        btn.disabled = true; btn.innerText = "REGISTRANDO...";
+
+        document.getElementById('finalNac').value = document.getElementById('nacInput').value;
+        document.getElementById('finalCita').value = aLatino(document.getElementById('citaInput').value);
+
+        const fD = new FormData(this);
+        fD.append("ALERTA_ANEMIA", globalAnemia);
+        fD.append("ALERTA_INASISTENCIA", globalInasistencias);
+
+        try {
+            // 1. Sincronizar actualización con el Censo (Usamos 'actualizarTel' para coincidir con el Apps Script)
+            const urlUpdate = `${SCRIPT_CENSO}?action=actualizarTel&dni=${dni}&telefono=${tel}`;
+            
+            // Disparo asíncrono para no retrasar la cita
+            fetch(urlUpdate, { mode: 'no-cors' }); 
+
+            // 2. Registrar la Cita en su hoja correspondiente
+            await fetch(SCRIPT_CITAS, { method: 'POST', body: fD });
+
+            lanzarModal("REGISTRO Y CELULAR ACTUALIZADOS", "✅"); 
+            setTimeout(() => location.reload(), 2000); 
+
+        } catch (error) {
+            console.error(error);
+            lanzarModal("Error al procesar el registro.", "❌");
+            btn.disabled = false; btn.innerText = "CONFIRMAR REGISTRO";
+        }
+    });
+
+    function limpiarAlerta() {
+        document.getElementById('alertInasistencia').style.display = 'none';
+        document.getElementById('anemiaDetails').style.display = 'none';
+        document.getElementById('boxHistorial').style.display = 'none';
+        document.getElementById('finalAviso').value = "";
+        globalAnemia = "NO"; globalInasistencias = "NINGUNA";
+    }
+
+    function abrirModuloAdmin() {
+        if(prompt("Clave de Acceso:") === "2026_DIT@") {
+            const s = document.getElementById('consInput');
+            ["NUTRICIÓN", "ODONTOLOGÍA", "PSICOLOGÍA"].forEach(e => {
+                let existe = Array.from(s.options).some(opt => opt.value === e);
+                if(!existe){
+                    let o = document.createElement("option"); o.value = e; o.text = "🏥 " + e; s.add(o);
+                }
+            });
+            lanzarModal("Especialidades activadas.", "⚙️");
+        }
+    }
+</script>
+</body>
+</html>
