@@ -12,6 +12,7 @@
             --burbuja-amarillo: #FFD166;
             --burbuja-verde: #06D6A0;
             --burbuja-morado: #B5179E;
+            --burbuja-celeste: #4361EE;
             --texto: #2B2D42;
             --blanco: #FFFFFF;
         }
@@ -70,9 +71,6 @@
             .container {
                 grid-template-columns: 1fr 1fr;
             }
-            .full-width {
-                grid-column: span 2;
-            }
         }
 
         .card {
@@ -91,11 +89,11 @@
             box-shadow: 0 12px 30px rgba(0,0,0,0.12);
         }
 
-        /* Colores de bordes personalizados para estilo infantil */
         .card-cred { border-color: var(--burbuja-rosa); }
         .card-campana { border-color: var(--burbuja-azul); }
         .card-familia { border-color: var(--burbuja-amarillo); }
         .card-whatsapp { border-color: var(--burbuja-verde); }
+        .card-juntos { border-color: var(--burbuja-celeste); }
         .card-video { border-color: var(--burbuja-morado); }
         .card-juego { border-color: #FF7096; }
 
@@ -108,7 +106,6 @@
             gap: 10px;
         }
 
-        /* Avatar Sección */
         .avatar-container {
             display: flex;
             align-items: center;
@@ -134,7 +131,6 @@
             color: #4A4E69;
         }
 
-        /* Botones de Enlace */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -143,12 +139,16 @@
             width: 100%;
             padding: 15px;
             border-radius: 20px;
-            text-decoration: none;
+            border: none;
+            cursor: pointer;
             color: var(--blanco);
             font-family: 'Fredoka One', cursive;
             font-size: 1.2rem;
             box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-            transition: background 0.2s;
+            transition: background 0.2s, transform 0.1s;
+        }
+        .btn:active {
+            transform: scale(0.98);
         }
 
         .btn-cred { background-color: var(--burbuja-rosa); }
@@ -157,10 +157,11 @@
         .btn-campana:hover { background-color: #40C4FF; }
         .btn-familia { background-color: #FFB703; }
         .btn-familia:hover { background-color: #FB8500; }
-        .btn-whatsapp { background-color: var(--burbuja-verde); }
+        .btn-whatsapp { background-color: var(--burbuja-verde); text-decoration: none;}
         .btn-whatsapp:hover { background-color: #02C39A; }
+        .btn-juntos { background-color: var(--burbuja-celeste); }
+        .btn-juntos:hover { background-color: #2140E5; }
 
-        /* Contenedor de Video Responsivo */
         .video-responsive {
             position: relative;
             padding-bottom: 56.25%;
@@ -179,12 +180,15 @@
             border: none;
         }
 
-        /* Estilos del Juego */
         .game-box {
             background: #F8F9FA;
             border-radius: 20px;
             padding: 20px;
             text-align: center;
+            min-height: 280px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .score-board {
@@ -197,12 +201,13 @@
             border-radius: 50px;
             display: inline-block;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            align-self: center;
         }
 
         .question {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: 700;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             color: #333;
         }
 
@@ -228,19 +233,88 @@
             transition: all 0.2s;
         }
 
-        .option-btn:hover {
+        .option-btn:hover:not(:disabled) {
             border-color: var(--burbuja-azul);
             background: #EBF8FF;
         }
 
         .feedback {
             margin-top: 15px;
-            font-family: 'Fredoka One', cursive;
-            font-size: 1.2rem;
-            height: 25px;
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            min-height: 50px;
         }
 
-        /* Animaciones */
+        /* --- ESTILOS DEL MODAL (VENTANA INTERNA) --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 15px;
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 900px;
+            height: 85vh;
+            border-radius: 25px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 5px solid var(--burbuja-amarillo);
+        }
+
+        .modal-header {
+            background: #F8F9FA;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #EEE;
+        }
+
+        .modal-title {
+            font-family: 'Fredoka One', cursive;
+            color: var(--texto);
+            font-size: 1.2rem;
+        }
+
+        .close-btn {
+            background: var(--burbuja-rosa);
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.1rem;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .close-btn:hover { background: #FF5C8A; }
+
+        .modal-body {
+            flex: 1;
+            width: 100%;
+            height: 100%;
+        }
+
+        .modal-body iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
         @keyframes bounce {
             0% { transform: translateY(0); }
             100% { transform: translateY(-8px); }
@@ -275,21 +349,29 @@
             <div class="card card-cred">
                 <h2 class="card-title" style="color: var(--burbuja-rosa);">📊 Tarjeta CRED</h2>
                 <p style="margin-bottom: 15px; font-weight: 500;">Revisa el crecimiento, vacunas y el desarrollo de tu pequeño campeón de forma fácil.</p>
-                <a href="https://desarrolloinfantiltemprano-dit.github.io/LibretaBoys/" target="_blank" class="btn btn-cred">🎒 Ver Mi Tarjeta CRED</a>
+                <button onclick="openModal('https://desarrolloinfantiltemprano-dit.github.io/LibretaBoys/', 'Tarjeta CRED 🎒')" class="btn btn-cred">🎒 Ver Mi Tarjeta CRED</button>
             </div>
 
             <div class="card card-campana">
                 <h2 class="card-title" style="color: var(--burbuja-azul);">📢 Campañas de Salud</h2>
                 <p style="margin-bottom: 15px; font-weight: 500;">¡No te pierdas ninguna! Entérate aquí de las próximas campañas médicas infantiles.</p>
-                <a href="https://desarrolloinfantiltemprano-dit.github.io/CampanaInfantil/" target="_blank" class="btn btn-campana">🏥 Ver Campañas</a>
+                <button onclick="openModal('https://desarrolloinfantiltemprano-dit.github.io/CampanaInfantil/', 'Campañas de Salud 🏥')" class="btn btn-campana">🏥 Ver Campañas</button>
             </div>
 
             <div class="card card-familia">
                 <h2 class="card-title" style="color: #FFB703;">🏡 Mi Familia</h2>
                 <p style="margin-bottom: 15px; font-weight: 500;">Mantén al día los datos familiares para una mejor atención personalizada.</p>
-                <a href="https://desarrolloinfantiltemprano-dit.github.io/casita/" target="_blank" class="btn btn-familia">📝 Registrar Mi Familia</a>
+                <button onclick="openModal('https://desarrolloinfantiltemprano-dit.github.io/casita/', 'Registrar Mi Familia 📝')" class="btn btn-familia">📝 Registrar Mi Familia</button>
             </div>
 
+            <!-- NUEVA SECCIÓN: PROGRAMA JUNTOS -->
+            <div class="card card-juntos">
+                <h2 class="card-title" style="color: var(--burbuja-celeste);">💰 Programa JUNTOS</h2>
+                <p style="margin-bottom: 15px; font-weight: 500;">Consulta si estás inscrita, revisa tus abonos y entérate de las fechas de cobro fácilmente.</p>
+                <button onclick="openModal('https://conectajuntos.juntos.gob.pe/Modulos/Postulaciones/login', 'Consulta Programa JUNTOS 🪙')" class="btn btn-juntos">🪙 Consultar Mi Abono</button>
+            </div>
+
+            <!-- WhatsApp se queda como enlace externo tradicional ya que los navegadores bloquean la apertura de la app dentro de una web pequeña -->
             <div class="card card-whatsapp">
                 <h2 class="card-title" style="color: var(--burbuja-verde);">💬 Grupo de Mamitas</h2>
                 <p style="margin-bottom: 15px; font-weight: 500;">Únete a nuestra comunidad de WhatsApp, comparte experiencias y recibe consejos del equipo CRED.</p>
@@ -322,8 +404,7 @@
                 <div class="game-box">
                     <div class="score-board">🏆 Puntaje: <span id="score">0</span> pts</div>
                     <div class="question" id="question-text">Cargando pregunta...</div>
-                    <div class="options-grid" id="options-container">
-                        </div>
+                    <div class="options-grid" id="options-container"></div>
                     <div class="feedback" id="feedback-text"></div>
                 </div>
             </div>
@@ -332,11 +413,45 @@
 
     </div>
 
+    <!-- ESTRUCTURA DE LA VENTANA INTERNA (MODAL) -->
+    <div id="siteModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div id="modalTitle" class="modal-title">Cargando...</div>
+                <button class="close-btn" onclick="closeModal()">Cerrar X</button>
+            </div>
+            <div class="modal-body">
+                <iframe id="modalFrame" src="" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+
     <footer>
         Mundo Mamitas - Desarrollo Infantil Temprano (DIT) © 2026 🌈
     </footer>
 
     <script>
+        // Funciones para manejar la ventana interna
+        function openModal(url, title) {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalFrame').src = url;
+            document.getElementById('siteModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('siteModal').style.display = 'none';
+            document.getElementById('modalFrame').src = ''; // Limpia el iframe para ahorrar recursos
+        }
+
+        // Cierra el modal si dan click fuera de la cajita blanca
+        window.onclick = function(event) {
+            const modal = document.getElementById('siteModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+
+        // --- LÓGICA DEL JUEGO INTERACTIVO ---
         const questions = [
             {
                 q: "¿Hasta qué edad se recomienda la lactancia materna exclusiva? 🍼",
@@ -391,7 +506,6 @@
             let currentQuestion = questions[currentQuestionIndex];
             const buttons = optionsContainer.getElementsByClassName('option-btn');
 
-            // Deshabilitar botones para que no marquen doble
             for(let btn of buttons) { btn.disabled = true; }
 
             if (selectedIndex === currentQuestion.correct) {
@@ -399,20 +513,21 @@
                 scoreElement.innerText = score;
                 feedbackElement.style.color = "#06D6A0";
                 feedbackElement.innerText = currentQuestion.tip;
+                buttons[selectedIndex].style.background = "#E6FFFA";
+                buttons[selectedIndex].style.borderColor = "#06D6A0";
             } else {
                 feedbackElement.style.color = "#FF85A2";
                 feedbackElement.innerText = "¡Oh, casi! Inténtalo en la siguiente. 🌸";
                 buttons[selectedIndex].style.background = "#FFE5EC";
                 buttons[selectedIndex].style.borderColor = "#FF85A2";
+                buttons[currentQuestion.correct].style.borderColor = "#06D6A0";
             }
 
-            // Cambiar de pregunta después de 3.5 segundos
             setTimeout(() => {
                 currentQuestionIndex++;
                 if (currentQuestionIndex < questions.length) {
                     loadQuestion();
                 } else {
-                    // Fin del juego, reinicia
                     questionTextElement.innerText = "🎉 ¡Felicidades Mamita! Completaste el juego con éxito. 🏆";
                     optionsContainer.innerHTML = `<button class="btn btn-campana" onclick="resetGame()">Volver a Jugar 🔄</button>`;
                     feedbackElement.innerText = "";
@@ -427,7 +542,6 @@
             loadQuestion();
         }
 
-        // Iniciar el juego automáticamente al cargar la página
         loadQuestion();
     </script>
 </body>
