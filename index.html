@@ -146,6 +146,7 @@
             font-size: 1.2rem;
             box-shadow: 0 4px 10px rgba(0,0,0,0.15);
             transition: background 0.2s, transform 0.1s;
+            text-decoration: none;
         }
         .btn:active {
             transform: scale(0.98);
@@ -157,7 +158,7 @@
         .btn-campana:hover { background-color: #40C4FF; }
         .btn-familia { background-color: #FFB703; }
         .btn-familia:hover { background-color: #FB8500; }
-        .btn-whatsapp { background-color: var(--burbuja-verde); text-decoration: none;}
+        .btn-whatsapp { background-color: var(--burbuja-verde); }
         .btn-whatsapp:hover { background-color: #02C39A; }
         .btn-juntos { background-color: var(--burbuja-celeste); }
         .btn-juntos:hover { background-color: #2140E5; }
@@ -364,14 +365,15 @@
                 <button onclick="openModal('https://desarrolloinfantiltemprano-dit.github.io/casita/', 'Registrar Mi Familia 📝')" class="btn btn-familia">📝 Registrar Mi Familia</button>
             </div>
 
-            <!-- NUEVA SECCIÓN: PROGRAMA JUNTOS -->
+            <!-- PROGRAMA JUNTOS: Ventana emergente controlada para evitar bloqueos del servidor gubernamental -->
             <div class="card card-juntos">
                 <h2 class="card-title" style="color: var(--burbuja-celeste);">💰 Programa JUNTOS</h2>
                 <p style="margin-bottom: 15px; font-weight: 500;">Consulta si estás inscrita, revisa tus abonos y entérate de las fechas de cobro fácilmente.</p>
-                <button onclick="openModal('https://conectajuntos.juntos.gob.pe/', 'Consulta Programa JUNTOS 🪙')" class="btn btn-juntos">🪙 Consultar Mi Abono</button>
+                <button onclick="window.open('https://conectajuntos.juntos.gob.pe/Modulos/Postulaciones/login', 'ProgramaJuntos', 'width=800,height=650,scrollbars=yes,status=no,location=no')" class="btn btn-juntos">
+                    🪙 Consultar Mi Abono
+                </button>
             </div>
 
-            <!-- WhatsApp se queda como enlace externo tradicional ya que los navegadores bloquean la apertura de la app dentro de una web pequeña -->
             <div class="card card-whatsapp">
                 <h2 class="card-title" style="color: var(--burbuja-verde);">💬 Grupo de Mamitas</h2>
                 <p style="margin-bottom: 15px; font-weight: 500;">Únete a nuestra comunidad de WhatsApp, comparte experiencias y recibe consejos del equipo CRED.</p>
@@ -431,7 +433,7 @@
     </footer>
 
     <script>
-        // Funciones para manejar la ventana interna
+        // Funciones para manejar la ventana interna (Modal)
         function openModal(url, title) {
             document.getElementById('modalTitle').innerText = title;
             document.getElementById('modalFrame').src = url;
@@ -440,10 +442,9 @@
 
         function closeModal() {
             document.getElementById('siteModal').style.display = 'none';
-            document.getElementById('modalFrame').src = ''; // Limpia el iframe para ahorrar recursos
+            document.getElementById('modalFrame').src = ''; 
         }
 
-        // Cierra el modal si dan click fuera de la cajita blanca
         window.onclick = function(event) {
             const modal = document.getElementById('siteModal');
             if (event.target == modal) {
